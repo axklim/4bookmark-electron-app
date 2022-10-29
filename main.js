@@ -1,21 +1,28 @@
-const { app, BrowserWindow, Tray, nativeImage, Menu, globalShortcut } = require('electron');
+const { app, BrowserWindow, Tray, nativeImage, Menu, globalShortcut, ipcMain } = require('electron');
+
+const isDev = process.env.NODE_ENV === 'development'
 
 let mainWindow;
 let tray;
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-        width: 280,
+        width: isDev? 800 : 280,
         height: 500,
         backgroundColor: '#253238',
-        show: false,
+        show: isDev,
         frame: false,
-        resizable: false,
+        resizable: isDev,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+        }
     });
     mainWindow.loadFile('index.html');
     mainWindow.on('blur', () => mainWindow.hide());
-    // mainWindow.webContents.openDevTools();
-    // mainWindow.once('ready-to-show', () => mainWindow.show());
+    if (isDev) {
+        mainWindow.webContents.openDevTools();
+    }
 };
 
 app.on('ready', () => {
@@ -40,7 +47,7 @@ app.on('ready', () => {
         },
         {
             label: 'Preferences',
-        }
+        },
     ]);
     tray = new Tray(icon);
     tray.setContextMenu(contextMenu);
@@ -54,4 +61,8 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
     }
+});
+
+ipcMain.on('bookmark:submit', (event, bookmarkUrl) => {
+    console.log(bookmarkUrl);
 });

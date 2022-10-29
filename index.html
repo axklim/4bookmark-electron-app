@@ -27,9 +27,19 @@
             color: gray;
             font-size: small;
         }
+
+        .submit-form {
+            margin: 10px 0 0 10px;
+        }
     </style>
 </head>
 <body>
+<div class="submit-form">
+    <form>
+        <input id="bookmarkUrl" type="text" placeholder="Bookmark URL" />
+        <button type="submit" >Add</button>
+    </form>
+</div>
 <ul class="link-list">
     <li>
         <div><a href="#">Example org</a></div>
@@ -56,5 +66,13 @@
         <div class="gray"><span>http://kdkdkd</span></div>
     </li>
 </ul>
+
+<script>
+    const { ipcRenderer } = require('electron');
+    document.querySelector('form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        ipcRenderer.send('bookmark:submit', document.querySelector('#bookmarkUrl').value)
+    })
+</script>
 </body>
 </html>
