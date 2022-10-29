@@ -1,28 +1,27 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
-const path = require('path');
+const { app, BrowserWindow } = require('electron');
+
+let mainWindow;
 
 const createWindow = () => {
-    const win = new BrowserWindow({
-        width: 800,
-        height: 600,
-        webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-        }
+    mainWindow = new BrowserWindow({
+        width: 280,
+        height: 500,
+        backgroundColor: '#253238',
+        show: false,
+        frame: false,
+        resizable: false,
     });
-    ipcMain.handle('ping', () => 'pong');
-    win.loadFile('index.html');
+    mainWindow.loadFile('index.html');
+    // mainWindow.webContents.openDevTools();
+    mainWindow.once('ready-to-show', () => mainWindow.show());
 };
 
-app.whenReady().then(() => {
-    createWindow();
-
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow();
-        }
-    });
-});
-
+app.on('ready', () => createWindow());
+app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+    }
+})
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
