@@ -1,4 +1,5 @@
 const { app, BrowserWindow, Tray, nativeImage, Menu, globalShortcut, ipcMain } = require('electron');
+const axios = require('axios');
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -51,6 +52,15 @@ app.on('ready', () => {
     ]);
     tray = new Tray(icon);
     tray.setContextMenu(contextMenu);
+});
+app.on('ready', () => {
+    console.log('lll lll lll');
+    axios.get('http://localhost:3000/bookmarks')
+        .then(({data}) => {
+            mainWindow.webContents.send('bookmarks:fetched', data);
+        })
+        .catch(error => console.log(error))
+    ;
 });
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

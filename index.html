@@ -18,6 +18,9 @@
         .link-list {
             list-style-type: none;
         }
+        .link-list li {
+            margin-top: 6px;
+        }
         .link-list li a {
             color: white;
             text-decoration: none;
@@ -40,39 +43,38 @@
         <button type="submit" >Add</button>
     </form>
 </div>
-<ul class="link-list">
-    <li>
-        <div><a href="#">Example org</a></div>
-        <div class="gray"><span>https://example.org</span></div>
-    </li>
-    <li>
-        <div><a href="#">Some site</a></div>
-        <div class="gray"><span>https://example.com/link-to-template</span></div>
-    </li>
-    <li>
-        <div><a href="#">Title</a></div>
-        <div class="gray"><span>http://kdkdkd</span></div>
-    </li>
-    <li>
-        <div><a href="#">Title</a></div>
-        <div class="gray"><span>http://kdkdkd</span></div>
-    </li>
-    <li>
-        <div><a href="#">Title</a></div>
-        <div class="gray"><span>http://kdkdkd</span></div>
-    </li>
-    <li>
-        <div><a href="#">Title</a></div>
-        <div class="gray"><span>http://kdkdkd</span></div>
-    </li>
+<ul id="bookmarks" class="link-list">
 </ul>
 
 <script>
     const { ipcRenderer } = require('electron');
     document.querySelector('form').addEventListener('submit', (event) => {
         event.preventDefault();
-        ipcRenderer.send('bookmark:submit', document.querySelector('#bookmarkUrl').value)
+        ipcRenderer.send('bookmark:submit', document.querySelector('#bookmarkUrl').value);
     })
+    
+    ipcRenderer.on('bookmarks:fetched', (event, bookmarks) => {
+        const list = document.querySelector('#bookmarks');
+        bookmarks.forEach(({title, href}) => {
+            const li = document.createElement('li');
+
+            const div1 = document.createElement('div')
+            const a = document.createElement('a');
+            a.setAttribute('href', href);
+            a.innerText = title;
+            div1.appendChild(a);
+            li.appendChild(div1);
+
+            const div2 = document.createElement('div');
+            div2.setAttribute('class', 'gray');
+            const span = document.createElement('span');
+            span.innerText = href;
+            div2.appendChild(span);
+            li.appendChild(div2);
+
+            list.appendChild(li);
+        });
+    });
 </script>
 </body>
 </html>
