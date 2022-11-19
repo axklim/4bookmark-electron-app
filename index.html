@@ -39,8 +39,7 @@
 <body>
 <div class="submit-form">
     <form>
-        <input id="bookmarkUrl" type="text" placeholder="Bookmark URL" autofocus />
-        <button type="submit" >Add</button>
+        <input id="search" type="text" placeholder="Search" autofocus />
     </form>
 </div>
 <ul id="bookmarks" class="link-list">
@@ -48,13 +47,14 @@
 
 <script>
     const { ipcRenderer } = require('electron');
-    document.querySelector('form').addEventListener('submit', (event) => {
+    document.querySelector('#search').addEventListener('input', (event) => {
         event.preventDefault();
-        ipcRenderer.send('bookmark:submit', document.querySelector('#bookmarkUrl').value);
+        ipcRenderer.send('bookmark:submit', document.querySelector('#search').value);
     })
     
     ipcRenderer.on('bookmarks:fetched', (event, bookmarks) => {
         const list = document.querySelector('#bookmarks');
+        list.innerHTML = '';
         bookmarks.forEach(({title, href}) => {
             const li = document.createElement('li');
 
@@ -77,7 +77,7 @@
     });
 
     ipcRenderer.on('bookmarks:fetched', (event, bookmarks) => {
-        document.querySelector('#bookmarkUrl').focus();
+        document.querySelector('#search').focus();
     });
 </script>
 </body>

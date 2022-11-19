@@ -5,12 +5,15 @@ const isDev = process.env.NODE_ENV === 'development'
 
 let mainWindow;
 let tray;
+let bookmarks = null;
 
 const fetchBookmarks = () => {
-    axios.get('http://localhost:3000/bookmarks')
-        .then(({data}) => {
-            mainWindow.webContents.send('bookmarks:fetched', data);
-        })
+    if (bookmarks !== null) {
+        return bookmarks;
+    }
+
+    return axios.get('http://localhost:3000/bookmarks')
+        .then(({data}) => bookmarks = data)
         .catch(error => console.log(error))
     ;
 }
@@ -35,7 +38,10 @@ const createWindow = () => {
         mainWindow.webContents.send('app:debug', 'focus');
     }
     const wc = mainWindow.webContents;
-    wc.on('did-finish-load', () => fetchBookmarks());
+    wc.on('did-finish-load', async () => {
+        const b = await fetchBookmarks();
+        mainWindow.webContents.send('bookmarks:fetched', b);
+    });
 };
 
 app.on('ready', () => {
@@ -81,6 +87,10 @@ app.on('window-all-closed', () => {
     }
 });
 
-ipcMain.on('bookmark:submit', (event, bookmarkUrl) => {
-    console.log(bookmarkUrl);
+ipcMain.on('bookmark:submit', async (event, searchText) => {
+    const b = await fetchBookmarks();
+    const f = b.filter(({title, href}) => {
+        return title.toLowerCase().includes(searchText.toLowerCase()) || href.toLowerCase().includes(searchText.toLowerCase());
+    });
+    mainWindow.webContents.send('bookmarks:fetched', f);
 });
