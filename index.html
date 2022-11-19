@@ -39,7 +39,7 @@
 <body>
 <div class="submit-form">
     <form>
-        <input id="bookmarkUrl" type="text" placeholder="Bookmark URL" />
+        <input id="bookmarkUrl" type="text" placeholder="Bookmark URL" autofocus />
         <button type="submit" >Add</button>
     </form>
 </div>
@@ -74,6 +74,10 @@
 
             list.appendChild(li);
         });
+    });
+
+    ipcRenderer.on('bookmarks:fetched', (event, bookmarks) => {
+        document.querySelector('#bookmarkUrl').focus();
     });
 </script>
 </body>

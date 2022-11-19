@@ -6,12 +6,21 @@ const isDev = process.env.NODE_ENV === 'development'
 let mainWindow;
 let tray;
 
+const fetchBookmarks = () => {
+    axios.get('http://localhost:3000/bookmarks')
+        .then(({data}) => {
+            mainWindow.webContents.send('bookmarks:fetched', data);
+        })
+        .catch(error => console.log(error))
+    ;
+}
+
 const createWindow = () => {
     mainWindow = new BrowserWindow({
         width: isDev? 800 : 280,
         height: 500,
         backgroundColor: '#253238',
-        show: isDev,
+        show: false,
         frame: false,
         resizable: isDev,
         webPreferences: {
@@ -23,7 +32,10 @@ const createWindow = () => {
     mainWindow.on('blur', () => mainWindow.hide());
     if (isDev) {
         mainWindow.webContents.openDevTools();
+        mainWindow.webContents.send('app:debug', 'focus');
     }
+    const wc = mainWindow.webContents;
+    wc.on('did-finish-load', () => fetchBookmarks());
 };
 
 app.on('ready', () => {
@@ -52,15 +64,11 @@ app.on('ready', () => {
     ]);
     tray = new Tray(icon);
     tray.setContextMenu(contextMenu);
-});
-app.on('ready', () => {
-    console.log('lll lll lll');
-    axios.get('http://localhost:3000/bookmarks')
-        .then(({data}) => {
-            mainWindow.webContents.send('bookmarks:fetched', data);
-        })
-        .catch(error => console.log(error))
-    ;
+
+    if (isDev) {
+        // TODO: fix delay. Focus application layout instead of developer tools
+        setTimeout(() => mainWindow.show(), 500);
+    }
 });
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
