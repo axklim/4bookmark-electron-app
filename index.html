@@ -47,6 +47,46 @@
 
 <script>
     const { ipcRenderer } = require('electron');
+
+    document.addEventListener('keydown', ({key}) => {
+        if ( key === 'ArrowDown' || key === 'ArrowUp') {
+            event.preventDefault();
+
+            const items = Array.from(document.querySelector('#bookmarks').childNodes);
+            if(items.length < 1) {
+                return;
+            }
+
+            const r = items.find(item => item.getAttribute('selected') === "true" );
+
+            if (!r) {
+                items[0].setAttribute('selected', true);
+                items[0].focus();
+                return;
+            }
+
+            items.forEach(item => item.setAttribute('selected', false));
+            
+            if (key === 'ArrowDown') {
+                if (!r.nextSibling) {
+                    items[0].setAttribute('selected', true);
+                    items[0].focus();
+                    return;
+                }
+                r.nextSibling.setAttribute('selected', true);
+                r.nextSibling.focus();
+            } else {
+                if (!r.previousSibling) {
+                    items[items.length - 1].setAttribute('selected', true);
+                    items[items.length - 1].focus();
+                    return;
+                }
+                r.previousSibling.setAttribute('selected', true);
+                r.previousSibling.focus();
+            }
+        }
+    });
+
     document.querySelector('#search').addEventListener('input', (event) => {
         event.preventDefault();
         ipcRenderer.send('bookmark:submit', document.querySelector('#search').value);
@@ -55,12 +95,15 @@
     ipcRenderer.on('bookmarks:fetched', (event, bookmarks) => {
         const list = document.querySelector('#bookmarks');
         list.innerHTML = '';
-        bookmarks.forEach(({title, href}) => {
+        bookmarks.forEach(({title, href}, index) => {
             const li = document.createElement('li');
+            li.setAttribute('selected', false)
+            li.tabIndex = index + 1;
 
             const div1 = document.createElement('div')
             const a = document.createElement('a');
             a.setAttribute('href', href);
+            a.tabIndex = -1;
             a.innerText = title;
             div1.appendChild(a);
             li.appendChild(div1);
