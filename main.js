@@ -1,4 +1,5 @@
 const { app, BrowserWindow, Tray, nativeImage, Menu, globalShortcut, ipcMain } = require('electron');
+const open = require('open');
 const axios = require('axios');
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -14,7 +15,7 @@ const fetchBookmarks = () => {
 
     return axios.get('http://localhost:3000/bookmarks')
         .then(({data}) => bookmarks = data)
-        .catch(error => console.log(error))
+        .catch(error => console.log(error.message))
     ;
 }
 
@@ -88,7 +89,20 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on('bookmark:submit', async (event, searchText) => {
+    if (!searchText.toLowerCase().startsWith('rep')) {
+        return;
+    }
+    // TODO: move to config
+    open(`https://testlions.atlassian.net/browse/${searchText.toUpperCase()}`);
+});
+
+ipcMain.on('bookmark:typing', async (event, searchText) => {
+    console.log({searchText})
+
     const b = await fetchBookmarks();
+    if (!b){
+        return;
+    }
     const f = b.filter(({title, href}) => {
         return title.toLowerCase().includes(searchText.toLowerCase()) || href.toLowerCase().includes(searchText.toLowerCase());
     });

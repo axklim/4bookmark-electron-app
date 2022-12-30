@@ -38,7 +38,7 @@
 </head>
 <body>
 <div class="submit-form">
-    <form>
+    <form id="search-form">
         <input id="search" type="text" placeholder="Search" autofocus />
     </form>
 </div>
@@ -66,7 +66,7 @@
             }
 
             items.forEach(item => item.setAttribute('selected', false));
-            
+
             if (key === 'ArrowDown') {
                 if (!r.nextSibling) {
                     items[0].setAttribute('selected', true);
@@ -87,15 +87,25 @@
         }
     });
 
-    document.querySelector('#search').addEventListener('input', (event) => {
+    document.querySelector('#search-form').addEventListener('submit', (event) => {
         event.preventDefault();
         ipcRenderer.send('bookmark:submit', document.querySelector('#search').value);
     })
-    
+
+    document.querySelector('#search').addEventListener('input', (event) => {
+        event.preventDefault();
+        ipcRenderer.send('bookmark:typing', document.querySelector('#search').value);
+    })
+
     ipcRenderer.on('bookmarks:fetched', (event, bookmarks) => {
         const list = document.querySelector('#bookmarks');
         list.innerHTML = '';
-        bookmarks.forEach(({title, href}, index) => {
+        if (!bookmarks) {
+          list.innerHTML = 'connection error';
+          return;
+        }
+
+      bookmarks.forEach(({title, href}, index) => {
             const li = document.createElement('li');
             li.setAttribute('selected', false)
             li.tabIndex = index + 1;
