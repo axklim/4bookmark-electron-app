@@ -1,3 +1,4 @@
+const { exec } = require('child_process');
 const { app, BrowserWindow, Tray, nativeImage, Menu, globalShortcut, ipcMain } = require('electron');
 const open = require('open');
 const axios = require('axios');
@@ -89,11 +90,14 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on('bookmark:submit', async (event, searchText) => {
-    if (!searchText.toLowerCase().startsWith('rep')) {
-        return;
+    if (searchText.toLowerCase().trim() === 'iterm') {
+        exec('open -a iTerm', (error, stdout, stderr) => {
+            console.log({error, stdout, stderr});
+        });
     }
-    // TODO: move to config
-    open(`https://testlions.atlassian.net/browse/${searchText.toUpperCase()}`);
+    if (searchText.toLowerCase().startsWith('rep')) {
+        open(`https://testlions.atlassian.net/browse/${searchText.toUpperCase()}`);
+    }
 });
 
 ipcMain.on('bookmark:typing', async (event, searchText) => {

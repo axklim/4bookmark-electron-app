@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
-    "watch": "nodemon --exec electron .",
+    "start:dev": "nodemon --exec electron .",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "install": "./build-and-install.sh"
