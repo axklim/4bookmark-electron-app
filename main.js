@@ -22,8 +22,8 @@ const fetchBookmarks = () => {
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-        width: isDev? 800 : 280,
-        height: 500,
+        width: 420,
+        height: 48,
         backgroundColor: '#253238',
         show: false,
         frame: false,
@@ -97,6 +97,12 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on('bookmark:submit', async (event, searchText) => {
+    if (searchText.toLowerCase().trim() === 'dota') {
+        exec('open -a "Dota 2"', (error, stdout, stderr) => {
+            console.log({error, stdout, stderr});
+        });
+        mainWindow.hide();
+    }
     if (searchText.toLowerCase().trim() === 'pref') {
         exec('open -a "Preferences"', (error, stdout, stderr) => {
             console.log({error, stdout, stderr});

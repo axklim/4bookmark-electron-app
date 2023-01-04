@@ -32,18 +32,60 @@
         }
 
         .submit-form {
-            margin: 10px 0 0 10px;
+            background-color: aliceblue;
+
+
+
+            height: 48px;
+            width: 100%;
+        }
+
+        .submit-form span {
+            color: rgb(198,244,205);
+            margin-left: 4px;
+            margin-right: 4px;
+        }
+
+        .cont {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+
+            height: 40px;
+
+            margin-right: 4px;
+            margin-left: 4px;
+
+            border-radius: 9px;
+            background-color: rgb(40,49,56);
+        }
+
+        #search {
+            border-style: hidden;
+            padding: 0;
+            margin: 0;
+
+            font-size: 18px;
+            font-family: monospace;
+            color: rgb(237,239,241);
+
+            height: 40px;
+            background-color: rgb(40,49,56);
+        }
+
+        #search:focus {
+            outline: none;
         }
     </style>
 </head>
 <body>
 <div class="submit-form">
-    <form id="search-form">
-        <input id="search" type="text" placeholder="Search" autofocus />
-    </form>
+    <div class="cont">
+        <form id="search-form">
+            <span>➜</span><input id="search" type="text" placeholder="4Bookmark Search" autofocus />
+        </form>
+    </div>
 </div>
-<ul id="bookmarks" class="link-list">
-</ul>
 
 <script>
     const { ipcRenderer } = require('electron');
