@@ -91,6 +91,7 @@
     document.querySelector('#search-form').addEventListener('submit', (event) => {
         event.preventDefault();
         ipcRenderer.send('bookmark:submit', document.querySelector('#search').value);
+        document.querySelector('#search').value = '';
     })
 
     document.querySelector('#search').addEventListener('input', (event) => {
