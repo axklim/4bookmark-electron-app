@@ -49,6 +49,7 @@
     const { ipcRenderer } = require('electron');
 
     document.addEventListener('keydown', ({key}) => {
+        ipcRenderer.send('event:keydown', {key, window: 'index'});
         if ( key === 'ArrowDown' || key === 'ArrowUp') {
             event.preventDefault();
 
