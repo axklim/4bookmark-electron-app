@@ -97,6 +97,12 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on('bookmark:submit', async (event, searchText) => {
+    if (searchText.toLowerCase().trim() === 'postman') {
+        exec('open -a "Postman"', (error, stdout, stderr) => {
+            console.log({error, stdout, stderr});
+        });
+        mainWindow.hide();
+    }
     if (searchText.toLowerCase().trim() === 'telegram') {
         exec('open -a "Telegram"', (error, stdout, stderr) => {
             console.log({error, stdout, stderr});
