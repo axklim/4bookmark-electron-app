@@ -2,6 +2,7 @@ const { exec } = require('child_process');
 const { app, BrowserWindow, Tray, nativeImage, Menu, globalShortcut, ipcMain, screen } = require('electron');
 const open = require('open');
 const axios = require('axios');
+const { capitalize } = require('lodash');
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -111,78 +112,94 @@ ipcMain.on('bookmark:submit', async (event, searchText) => {
             console.log({error, stdout, stderr});
         });
         mainWindow.hide();
+        return;
     }
     if (searchText.toLowerCase().trim() === 'postman') {
         exec('open -a "Postman"', (error, stdout, stderr) => {
             console.log({error, stdout, stderr});
         });
         mainWindow.hide();
+        return;
     }
     if (searchText.toLowerCase().trim() === 'telegram') {
         exec('open -a "Telegram"', (error, stdout, stderr) => {
             console.log({error, stdout, stderr});
         });
         mainWindow.hide();
+        return;
     }
     if (searchText.toLowerCase().trim() === 'dota') {
         exec('open -a "Dota 2"', (error, stdout, stderr) => {
             console.log({error, stdout, stderr});
         });
         mainWindow.hide();
+        return;
     }
     if (searchText.toLowerCase().trim() === 'pref') {
         exec('open -a "Preferences"', (error, stdout, stderr) => {
             console.log({error, stdout, stderr});
         });
         mainWindow.hide();
+        return;
     }
     if (searchText.toLowerCase().trim() === 'php') {
         exec('open -a "PhpStorm"', (error, stdout, stderr) => {
             console.log({error, stdout, stderr});
         });
         mainWindow.hide();
+        return;
     }
     if (searchText.toLowerCase().trim() === 'chrome') {
         exec('open -a "Google Chrome" --args --profile-directory="Profile 4"', (error, stdout, stderr) => {
             console.log({error, stdout, stderr});
         });
         mainWindow.hide();
+        return;
     }
     if (searchText.toLowerCase().trim() === 'chrome --new') {
         exec('open --new -a "Google Chrome" --args --profile-directory="Profile 4"', (error, stdout, stderr) => {
             console.log({error, stdout, stderr});
         });
         mainWindow.hide();
+        return;
     }
     if (searchText.toLowerCase().trim() === 'chrome w') {
         exec('open -a "Google Chrome" --args --profile-directory="Profile 2"', (error, stdout, stderr) => {
             console.log({error, stdout, stderr});
         });
         mainWindow.hide();
+        return;
     }
     if (searchText.toLowerCase().trim() === 'chrome --new w') {
         exec('open --new -a "Google Chrome" --args --profile-directory="Profile 2"', (error, stdout, stderr) => {
             console.log({error, stdout, stderr});
         });
         mainWindow.hide();
+        return;
     }
     if (searchText.toLowerCase().trim() === 'whatsapp') {
         exec('open -a whatsApp', (error, stdout, stderr) => {
             console.log({error, stdout, stderr});
         });
         mainWindow.hide();
+        return;
     }
     if (searchText.toLowerCase().trim() === 'iterm') {
         exec('open -a iTerm', (error, stdout, stderr) => {
             console.log({error, stdout, stderr});
         });
         mainWindow.hide();
+        return;
     }
     if (searchText.toLowerCase().startsWith('rep')) {
         open(`https://testlions.atlassian.net/browse/${searchText.toUpperCase()}`);
         mainWindow.hide();
+        return;
     }
     console.log('action not found :(');
+    exec(`open -a ${capitalize(searchText)}`, (error, stdout, stderr) => {
+        console.log({error, stdout, stderr});
+    });
 });
 
 ipcMain.on('bookmark:typing', async (event, searchText) => {
