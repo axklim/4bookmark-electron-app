@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>4Bookmark</title>
+    <style>
+        html {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+        }
+        #container {
+            display: flex;
+            flex-direction: row;
+            margin: 4px 4px 4px 4px;
+            border-radius: 9px;
+            background-color: #283138;
+        }
+        #search {
+        }
+        #search:focus {
+            outline: none;
+        }
+        #echo {
+            color: #929292;
+        }
+        #greeting {
+            color: #c6f4cdff;
+            font-family: Roboto, system-ui, sans-serif;
+            margin-left: 4px;
+            margin-right: 4px;
+        }
+        .editable {
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            margin: 0;
+            height: 40px;
+            line-height: 40px;
+        }
+        .search-font {
+            font-size: 18px;
+            font-family: monospace;
+            color: rgb(237,239,241);
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <div id="greeting" class="editable">➜</div>
+    <div id="search" class="search-font editable" contenteditable="true" autofocus></div>
+    <div id="echo" class="search-font editable"></div>
+</div>
+<script>
+    const { ipcRenderer } = require('electron');
+    const words = ['whatsApp', 'spotify', 'dataGrip', 'phpStorm', 'preview'];
+    const placeholder = '4Bookmark Search';
+
+    document.querySelector('#search').innerText = '';
+    document.querySelector('#echo').innerText = placeholder;
+
+    document.querySelector('#search').addEventListener('keypress', (event) => {
+        if ('Enter' === event.key) {
+            ipcRenderer.send('bookmark:submit', document.querySelector('#search').innerText);
+            document.querySelector('#search').innerText = '';
+            event.preventDefault();
+        }
+    });
+
+    document.querySelector('#search').addEventListener('input', () => {
+        const searchedText = document.querySelector('#search').innerText;
+        const suggestion = findSuggestion(searchedText, words);
+        const tail = getTail(searchedText, suggestion, placeholder);
+
+        document.querySelector('#echo').innerText = tail;
+
+        ipcRenderer.send('bookmark:typing', {searchedText, suggestion, tail});
+    });
+
+    document.querySelector('#container').addEventListener('click', () => {
+        document.querySelector('#search').focus();
+    });
+
+    const getTail = (startsWith, word, defaultPlaceholder) => {
+        return startsWith === '' ? defaultPlaceholder : word.slice(startsWith.length);
+    }
+    const findSuggestion = (search, words) => {
+        if (!search) {
+            return '';
+        }
+        return words.find((word) => word.toLowerCase().startsWith(search.toLowerCase())) ?? '';
+    };
+
+</script>
+</body>
+</html>
