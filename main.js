@@ -57,7 +57,6 @@ const showWindow = () => {
     const x = Math.floor(display.size.width / 2 - windowSize().width / 2);
     const y = Math.floor(display.size.height * 0.3 - windowSize().height / 2);
     featureWindow.setPosition(x, y);
-    featureWindow.setPosition(0, 0);
     featureWindow.show();
 }
 
