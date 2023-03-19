@@ -8,7 +8,7 @@
     "start:dev": "NODE_ENV=development nodemon --exec electron .",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "make-and-install": "./build-and-install.sh"
+    "install": "./install.sh"
   },
   "keywords": [],
   "author": "",
