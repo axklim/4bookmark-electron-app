@@ -31,10 +31,7 @@
       "packagerConfig": {},
       "makers": [
         {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "lofi_player"
-          }
+          "name": "@electron-forge/maker-squirrel"
         },
         {
           "name": "@electron-forge/maker-zip",
