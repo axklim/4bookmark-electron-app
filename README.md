@@ -3,3 +3,4 @@ Build and install (macOS only):
 npm install
 ```
 Default global shortcut: `Cmd+Esc`
+
