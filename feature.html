@@ -57,8 +57,16 @@
 </div>
 <script>
     const { ipcRenderer } = require('electron');
-    const words = ['whatsApp', 'spotify', 'dataGrip', 'phpStorm', 'preview'];
+    const words = [];
     const placeholder = '4Bookmark Search';
+
+    ipcRenderer.on('bookmark:found', (_, applicationName) => {
+        words.push(applicationName);
+    });
+
+    window.onload = () => {
+        ipcRenderer.send('bookmark:reload');
+    };
 
     document.querySelector('#search').innerText = '';
     document.querySelector('#echo').innerText = placeholder;
