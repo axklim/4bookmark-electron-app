@@ -71,8 +71,20 @@
     document.querySelector('#search').innerText = '';
     document.querySelector('#echo').innerText = placeholder;
 
-    document.addEventListener('keydown', ({key}) => {
-        ipcRenderer.send('event:keydown', {key, window: 'index'});
+    document.addEventListener('keydown', (event) => {
+        if ('Tab' === event.key) {
+            const searchedText = document.querySelector('#search').innerText;
+            const suggestion = findSuggestion(searchedText, words);
+            const tail = getTail(searchedText, suggestion, placeholder);
+
+            if (suggestion !== '' && tail !== '') {
+                document.querySelector('#search').innerText = suggestion;
+                document.querySelector('#echo').innerText = '';
+            }
+
+            event.preventDefault();
+        }
+        ipcRenderer.send('event:keydown', {kep: event.key, window: 'index'});
     });
 
     document.querySelector('#search').addEventListener('keypress', (event) => {
