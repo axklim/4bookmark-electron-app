@@ -80,6 +80,15 @@
             if (suggestion !== '' && tail !== '') {
                 document.querySelector('#search').innerText = suggestion;
                 document.querySelector('#echo').innerText = '';
+
+                // see: https://stackoverflow.com/questions/1125292/how-to-move-cursor-to-end-of-contenteditable-entity
+                contentEditableElement = document.querySelector('#search');
+                range = document.createRange();//Create a range (a range is a like the selection but invisible)
+                range.selectNodeContents(contentEditableElement);//Select the entire contents of the element with the range
+                range.collapse(false);//collapse the range to the end point. false means collapse to end rather than the start
+                selection = window.getSelection();//get the selection object (allows you to change selection)
+                selection.removeAllRanges();//remove any selections already made
+                selection.addRange(range);//make
             }
 
             event.preventDefault();
