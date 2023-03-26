@@ -93,7 +93,7 @@
 
             event.preventDefault();
         }
-        ipcRenderer.send('event:keydown', {kep: event.key, window: 'index'});
+        ipcRenderer.send('event:keydown', {key: event.key, window: 'index'});
     });
 
     document.querySelector('#search').addEventListener('keypress', (event) => {
