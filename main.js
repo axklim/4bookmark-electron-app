@@ -3,9 +3,7 @@
 const {exec} = require('child_process');
 const {app, BrowserWindow, Tray, nativeImage, Menu, globalShortcut, ipcMain, screen} = require('electron');
 const open = require('open');
-const {capitalize} = require('lodash');
 const fs = require("node:fs");
-
 
 const isDev = () => {
     return process.env.NODE_ENV === 'development';
@@ -121,43 +119,8 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on('bookmark:submit', async (event, searchText) => {
-    if (searchText.toLowerCase().trim() === 'docker') {
-        exec('open -a "Docker"', (error, stdout, stderr) => {
-            console.log({error, stdout, stderr});
-        });
-        featureWindow.hide();
-        return;
-    }
-    if (searchText.toLowerCase().trim() === 'postman') {
-        exec('open -a "Postman"', (error, stdout, stderr) => {
-            console.log({error, stdout, stderr});
-        });
-        featureWindow.hide();
-        return;
-    }
-    if (searchText.toLowerCase().trim() === 'telegram') {
-        exec('open -a "Telegram"', (error, stdout, stderr) => {
-            console.log({error, stdout, stderr});
-        });
-        featureWindow.hide();
-        return;
-    }
-    if (searchText.toLowerCase().trim() === 'dota') {
-        exec('open -a "Dota 2"', (error, stdout, stderr) => {
-            console.log({error, stdout, stderr});
-        });
-        featureWindow.hide();
-        return;
-    }
     if (searchText.toLowerCase().trim() === 'pref') {
         exec('open -a "Preferences"', (error, stdout, stderr) => {
-            console.log({error, stdout, stderr});
-        });
-        featureWindow.hide();
-        return;
-    }
-    if (searchText.toLowerCase().trim() === 'php') {
-        exec('open -a "PhpStorm"', (error, stdout, stderr) => {
             console.log({error, stdout, stderr});
         });
         featureWindow.hide();
@@ -191,27 +154,17 @@ ipcMain.on('bookmark:submit', async (event, searchText) => {
         featureWindow.hide();
         return;
     }
-    if (searchText.toLowerCase().trim() === 'whatsapp') {
-        exec('open -a whatsApp', (error, stdout, stderr) => {
-            console.log({error, stdout, stderr});
-        });
+    if (/^\d+$/.test(searchText)) {
+        open(`https://ozean12.atlassian.net/browse/AUTH-${searchText}`);
         featureWindow.hide();
         return;
     }
-    if (searchText.toLowerCase().trim() === 'iterm') {
-        exec('open -a iTerm', (error, stdout, stderr) => {
-            console.log({error, stdout, stderr});
-        });
+    if (searchText.toLowerCase().startsWith('auth')) {
+        open(`https://ozean12.atlassian.net/browse/${searchText.toUpperCase()}`);
         featureWindow.hide();
         return;
     }
-    if (searchText.toLowerCase().startsWith('rep')) {
-        open(`https://testlions.atlassian.net/browse/${searchText.toUpperCase()}`);
-        featureWindow.hide();
-        return;
-    }
-    console.log('action not found :(');
-    exec(`open -a ${capitalize(searchText)}`, (error, stdout, stderr) => {
+    exec(`open -a ${searchText}`, (error, stdout, stderr) => {
         console.log({error, stdout, stderr});
     });
 });

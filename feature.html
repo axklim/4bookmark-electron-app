@@ -100,6 +100,7 @@
         if ('Enter' === event.key) {
             ipcRenderer.send('bookmark:submit', document.querySelector('#search').innerText);
             document.querySelector('#search').innerText = '';
+            document.querySelector('#echo').innerText = '';
             event.preventDefault();
         }
     });
