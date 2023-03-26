@@ -63,6 +63,10 @@
     document.querySelector('#search').innerText = '';
     document.querySelector('#echo').innerText = placeholder;
 
+    document.addEventListener('keydown', ({key}) => {
+        ipcRenderer.send('event:keydown', {key, window: 'index'});
+    });
+
     document.querySelector('#search').addEventListener('keypress', (event) => {
         if ('Enter' === event.key) {
             ipcRenderer.send('bookmark:submit', document.querySelector('#search').innerText);
@@ -88,13 +92,13 @@
     const getTail = (startsWith, word, defaultPlaceholder) => {
         return startsWith === '' ? defaultPlaceholder : word.slice(startsWith.length);
     }
+
     const findSuggestion = (search, words) => {
         if (!search) {
             return '';
         }
         return words.find((word) => word.toLowerCase().startsWith(search.toLowerCase())) ?? '';
-    };
-
+    }
 </script>
 </body>
 </html>
